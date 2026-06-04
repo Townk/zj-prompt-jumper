@@ -48,7 +48,9 @@ impl PromptMatcher {
     /// True if the ANSI-stripped `line` starts with any configured prefix.
     pub fn is_prompt_line(&self, line: &str) -> bool {
         let stripped = strip_ansi(line);
-        self.prefixes.iter().any(|p| stripped.starts_with(p.as_str()))
+        self.prefixes
+            .iter()
+            .any(|p| stripped.starts_with(p.as_str()))
     }
 
     /// Scan `lines` and return the indices that match.
@@ -161,14 +163,7 @@ mod tests {
 
     #[test]
     fn prompt_rows_finds_all_hits() {
-        let lines = s(&[
-            "❯ ls",
-            "file1",
-            "file2",
-            "❯ cat file1",
-            "contents",
-            "❮ vim",
-        ]);
+        let lines = s(&["❯ ls", "file1", "file2", "❯ cat file1", "contents", "❮ vim"]);
         let m = PromptMatcher::default_p10k();
         assert_eq!(m.prompt_rows(&lines), vec![0, 3, 5]);
     }
@@ -182,11 +177,7 @@ mod tests {
 
     #[test]
     fn prompt_rows_with_ansi_colored_prompt_char() {
-        let lines = s(&[
-            "\x1b[32m❯\x1b[0m ls",
-            "output",
-            "\x1b[31m❯\x1b[0m grep foo",
-        ]);
+        let lines = s(&["\x1b[32m❯\x1b[0m ls", "output", "\x1b[31m❯\x1b[0m grep foo"]);
         let m = PromptMatcher::default_p10k();
         assert_eq!(m.prompt_rows(&lines), vec![0, 2]);
     }
