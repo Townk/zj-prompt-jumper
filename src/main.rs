@@ -155,7 +155,10 @@ impl State {
             // keybind/CLI sources, where an unrecognized name is a real
             // misconfiguration worth seeing.
             if !matches!(msg.source, PipeSource::Plugin(_)) {
-                eprintln!("zj-prompt-jumper: unrecognized direction (name='{}')", msg.name);
+                eprintln!(
+                    "zj-prompt-jumper: unrecognized direction (name='{}')",
+                    msg.name
+                );
             }
             return;
         };
