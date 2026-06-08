@@ -1,6 +1,6 @@
 [package]
 name = "zj-prompt-jumper"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Zellij plugin: jump to previous/next shell prompt in scroll mode"
 license = "MIT"

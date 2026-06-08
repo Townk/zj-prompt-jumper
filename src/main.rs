@@ -146,10 +146,17 @@ impl ZellijPlugin for State {
 impl State {
     fn handle_pipe(&mut self, msg: PipeMessage) {
         let Some(dir) = direction_from_msg(&msg) else {
-            eprintln!(
-                "zj-prompt-jumper: unrecognized direction (name='{}', payload={:?})",
-                msg.name, msg.payload
-            );
+            // Not a jump command. Plugin-to-plugin broadcasts (e.g. zj-hud's
+            // `__zj_hud_sync_state`) are sprayed to every loaded plugin and are
+            // none of our business. Never log the payload: those blobs are
+            // multi-KB of escaped UTF-8 and dumping them overflows Zellij's
+            // per-plugin stderr buffer, which traps the plugin and kills
+            // jumping entirely. Only surface a name-only diagnostic for
+            // keybind/CLI sources, where an unrecognized name is a real
+            // misconfiguration worth seeing.
+            if !matches!(msg.source, PipeSource::Plugin(_)) {
+                eprintln!("zj-prompt-jumper: unrecognized direction (name='{}')", msg.name);
+            }
             return;
         };
 
